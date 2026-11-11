@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyond GDP: What Drives Happiness Recovery Post-COVID?</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script src="data.js"></script>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #333333;
+            --text-muted: #777777;
+            --navy-accent: #0A2540;
+            --gold-accent: #C5A059;
+            --rust-accent: #C0392B;
+        }
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        .article-container {
+            position: relative;
+            max-width: 880px; 
+            margin: 0 auto;
+            padding: 60px 40px 100px 120px; 
+        }
+
+        .path-line {
+            position: absolute;
+            left: 40px; 
+            top: 0; bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, transparent 0%, var(--gold-accent) 10%, var(--gold-accent) 90%, transparent 100%);
+            opacity: 0.6;
+        }
+
+        .step {
+            position: relative;
+            margin-bottom: 100px;
+            padding-left: 0; 
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .step.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        .step::before {
+            content: '';
+            position: absolute;
+            left: -87px; 
+            top: 12px;
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            background-color: var(--gold-accent);
+            box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.2);
+        }
+
+        h1.title {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 2.8rem;
+            color: var(--navy-accent);
+            line-height: 1.2;
+            margin-bottom: 30px;
+            font-weight: 800;
+            border-bottom: 4px solid var(--gold-accent);
+            padding-bottom: 20px;
+        }
+        
+        .intro-text {
+            font-size: 1.25rem;
+            color: #555555;
+            margin-bottom: 60px;
+            font-style: italic;
+        }
+
+        h2 {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1.6rem;
+            color: var(--navy-accent);
+            margin-top: 50px;
+            margin-bottom: 25px;
+            border-left: 6px solid var(--gold-accent);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            text-align: justify;
+            color: #333;
+        }
+
+        .figure-container {
+            margin: 40px 0;
+            background: #fcfcfc;
+            padding: 20px;
+            border: 1px solid #eaeaea;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+        .figure-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .figure-label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--navy-accent);
+            margin-top: 15px;
+            text-align: left;
+            border-top: 1px solid #eaeaea;
+            padding-top: 10px;
+        }
+
+        .interactive-box {
+            background: #fcfcfc;
+            border: 1px solid #eaeaea;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 40px 0;
+            box-shadow: 0 8px 24px rgba(10, 37, 64, 0.08);
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            color: var(--navy-accent);
+            border: 2px solid var(--navy-accent);
+            font-size: 1rem;
+            font-family: sans-serif;
+            font-weight: bold;
+            outline: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        select:hover {
+            background-color: #f0f4f8;
+        }
+        #chart-container {
+            width: 100%;
+            height: 450px;
+        }
+
+        .news-photo {
+            margin: 40px 0;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #eaeaea;
+        }
+        .news-photo img {
+            width: 100%;
+            display: block;
+        }
+
+        .caption-note {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            font-family: sans-serif;
+            margin-top: 12px;
+            text-align: justify;
+        }
+        
+        ol {
+            padding-left: 20px;
+            font-size: 1.1rem;
+        }
+        li {
+            margin-bottom: 15px;
+        }
+        
+        li strong, p strong {
+            color: var(--rust-accent);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <article class="article-container">
+        <div class="path-line"></div>
+
+        <h1 class="title">Beyond GDP: What Drives Happiness Recovery Post-COVID?</h1>
+        <p class="intro-text">
+            When the pandemic hit, we assumed the richest countries would bounce back the fastest. They had the money, the healthcare, and the resources. Yet, the data tells a different story. In fact, the countries that recovered the largest share of their lost happiness were often the ones with the lowest GDP. How can poorer nations out-recover the wealthiest ones? And if money doesn't buy resilience, what does?
+        </p>
+
+        <section class="step">
+            <div class="figure-container">
+                <img src="new_fig1_trend_by_gdp.png" alt="Figure 1">
+                <div class="figure-label">Figure 1: GDP provides a buffer against the pandemic shock</div>
+            </div>
+            <p>In Figure 1, the temporal context is established. It demonstrates that while happiness overall decreased due to the pandemic, high-GDP nations kept a higher floor. They maintained their absolute evaluation scores above 6.0 and held a 1.4-point lead over low-GDP countries during the 2022 trough. This effectively illustrates how GDP acted as a buffer against the initial shock.</p>
+        </section>
+
+        <section class="step">
+            <h2>However, does a higher GDP guarantee a faster recovery?</h2>
+            <div class="figure-container">
+                <img src="new_fig2a_split_box_scatter.png" alt="Figure 2">
+                <div class="figure-label">Figure 2: Low-GDP countries show a higher proportional recovery rate</div>
+            </div>
+            <p>Figure 2 reveals a paradox. By calculating the relative recovery ratio among countries that experienced a drop, the analysis finds that low-GDP countries achieved a much higher median recovery rate. They recovered <strong>63%</strong> of their lost ground, whereas high-GDP countries recovered only <strong>10%</strong>.</p>
+            <p>While the chart shows extreme outliers like Kosovo (13,550%) and Kazakhstan (6,110%) due to near-zero initial drops, the median reflects a broader reality: Low-GDP countries generally suffered deeper collapses, meaning any rebound looks proportionally huge. Despite this mathematical vulnerability, the overarching pattern remains clear: while GDP is a buffer, it is not the engine for recovery.</p>
+        </section>
+
+        <section class="step">
+            <h2>If GDP is not the engine, what is the real factor?</h2>
+            <div class="figure-container">
+                <img src="fig3_factor_corr.png" alt="Figure 3">
+                <div class="figure-label">Figure 3: Corruption perception, not GDP, tracks recovery most closely</div>
+            </div>
+            <p>Since GDP cannot explain the speed of recovery, Figure 3 investigates the real indicator. The correlation analysis shows that corruption perception plays the most critical role. Corruption perception has the strongest negative association (-0.43) with recovery, meaning lower corruption is associated with weaker recovery. This is not because corruption is beneficial, but because clean countries had highly stable baselines and barely fell at all. In contrast, GDP per capita sits near the center (-0.08), indicating a very weak relationship.</p>
+            <p>Moreover, freedom and social support show a small positive correlation (+0.06, +0.04), but their effect sizes are negligible. Compared to the negative impact of corruption, these weak positive factors have minimal predictive power for recovery speed. This confirms that corruption perception, rather than GDP or other positive factors, is the most robust indicator associated with recovery.</p>
+        </section>
+
+        <section class="step">
+            <h2>Three takeaways:</h2>
+            <ol>
+                <li><strong>GDP wealth provides a buffer, but it is not the engine for recovery:</strong> <br> The high-GDP countries successfully maintained a higher baseline of life evaluation during the pandemic's trough (Figure 1). Yet, their wealth advantage did not guarantee a faster happiness recovery.</li>
+                <li><strong>Low-GDP countries show higher proportional resilience, with a caveat:</strong> <br>Compared to high-GDP countries, low-GDP countries recovered a much larger percentage of their lost happiness (63% vs. 10%).</li>
+                <li><strong>Low corruption is the real indicator of recovery:</strong> <br> Figure 3 shows that higher corruption perception scores (meaning less corruption) have a strong negative correlation (-0.43) with the recovery ratio. Good governance acts as a powerful structural buffer against shocks.</li>
+            </ol>
+        </section>
+
+        <section class="step">
+            <h2>Why this matters: The Bangladesh Case</h2>
+            <p>Figure 4 places Bangladesh directly alongside the sample median on four key indicators, revealing a stark reality. Economically, Bangladesh is not an outlier: its GDP (1.35) is very close to the sample median (1.58). However, its life evaluation plummets to 4.32, far below the median of 5.99.</p>
+            <p>The real reason lies in the last two bars. The chart shows that Bangladesh's governance is weak, with its perceived corruption (0.09) below the median (0.11). More importantly, look at its social support: only 0.24, compared to a median of 1.30. This is the tragedy of a failed system.</p>
+            
+            <div class="interactive-box">
+                <label for="countrySelect" style="font-family: sans-serif; color: var(--navy-accent); font-size: 0.95rem; font-weight: bold; margin-bottom: 8px; display: block;">Select Country:</label>
+                <select id="countrySelect">
+                </select>
+                <div id="chart-container"></div>
+                <div class="figure-label">Figure 4: Country Metrics vs. Sample Median</div>
+            </div>
+            
+            <p>A country may possess average wealth, but when corruption is rampant, the funds intended to build a social safety net vanish.</p>
+            
+            <div class="news-photo">
+                <img src="figure5.png" alt="Migrant workers flee Dhaka">
+                <div class="caption-note">
+                    Migrant workers flee Dhaka before the nationwide lockdown. Reports of unfair medical supply distribution during the pandemic sparked public outrage, exposing how the most vulnerable are left unprotected when systems fail.
+                </div>
+            </div>  
+            
+            <p>When a system is consumed by corruption and lacks social support, it completely loses its ability to protect its citizens.</p>
+        </section>
+
+        <section class="step">
+            <h2>So, what does this have to do with us?</h2>
+            <p>Because it proves that even high GDP cannot protect you if the system collapses. Demanding a clean and accountable government is not merely a political slogan, but the most direct way for citizens to protect their daily lives. This gap will never close on its own; it must be bridged by the people.</p>
+        </section>
+
+    </article>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 }); 
+
+        document.querySelectorAll('.step').forEach(step => {
+            observer.observe(step);
+        });
+
+        const countries = Object.keys(countryData);
+        const getMedian = (arr) => {
+            const sorted = arr.slice().sort((a, b) => a - b);
+            const mid = Math.floor(sorted.length / 2);
+            return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+        };
+
+        const medians = {
+            gdp: getMedian(countries.map(c => countryData[c].gdp)),
+            life: getMedian(countries.map(c => countryData[c].recovery_life)),
+            corr: getMedian(countries.map(c => countryData[c].corruption)),
+            social: getMedian(countries.map(c => countryData[c].social_support))
+        };
+
+        const select = document.getElementById('countrySelect');
+        countries.sort().forEach(country => {
+            const option = document.createElement('option');
+            option.value = country;
+            option.text = country;
+            if (country === 'Bangladesh') option.selected = true;
+            select.appendChild(option);
+        });
+
+        const chart = echarts.init(document.getElementById('chart-container'));
+        const categories = ['GDP\n(Log index)', 'Life Eval\n(2025)', 'Corruption\n(Higher = Better)', 'Social Support'];
+
+        function updateChart(countryName) {
+            const cData = countryData[countryName];
+            
+            const option = {
+                backgroundColor: 'transparent',
+                tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                legend: { 
+                    data: ['Sample Median', countryName], 
+                    top: 0,
+                    textStyle: { color: '#333', fontWeight: 'bold' }
+                },
+                grid: { left: '3%', right: '4%', bottom: '5%', containLabel: true },
+                xAxis: { 
+                    type: 'category', 
+                    data: categories,
+                    axisLabel: { color: '#444', fontSize: 12, fontWeight: 'bold' },
+                    axisLine: { lineStyle: { color: '#aaa' } }
+                },
+                yAxis: { 
+                    type: 'value', 
+                    name: 'Scores',
+                    nameTextStyle: { color: '#444', fontWeight: 'bold' },
+                    axisLabel: { color: '#444' },
+                    splitLine: { lineStyle: { color: '#eee', type: 'dashed' } }
+                },
+                series: [
+                    {
+                        name: 'Sample Median',
+                        type: 'bar',
+                        barWidth: '30%',
+                        itemStyle: { color: '#cccccc' },
+                        data: [medians.gdp, medians.life, medians.corr, medians.social],
+                        label: { show: true, position: 'top', color: '#666', fontWeight: 'bold' }
+                    },
+                    {
+                        name: countryName,
+                        type: 'bar',
+                        barWidth: '30%',
+                        itemStyle: { 
+                            color: '#C5A059',
+                            borderColor: '#0A2540',
+                            borderWidth: 1 
+                        },
+                        data: [cData.gdp, cData.recovery_life, cData.corruption, cData.social_support],
+                        label: { show: true, position: 'top', color: '#0A2540', fontWeight: 'bold' }
+                    }
+                ]
+            };
+            chart.setOption(option);
+        }
+
+        select.addEventListener('change', (e) => updateChart(e.target.value));
+        updateChart(select.value);
+        window.addEventListener('resize', () => chart.resize());
+    </script>
+</body>
+</html>
